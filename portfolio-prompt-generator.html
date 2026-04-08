@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Prompt Generator — AI Workshop</title>
+  <meta name="description"
+    content="Generate the perfect AI prompt to build your personal portfolio website. Designed for the AI Workshop — fill your details, pick a theme, and get your prompt instantly." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-2: #243347;
+      --border: #334155;
+      --border-focus: #6366F1;
+      --accent: #6366F1;
+      --accent-hover: #818CF8;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --muted: #475569;
+      --danger: #F87171;
+      --success-bg: #064E3B;
+      --success-text: #6EE7B7;
+      --info-bg: #1E3A5F;
+      --info-text: #93C5FD;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-heading: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --transition: 0.2s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Background decoration ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 100px;
+      padding: 4px 12px;
+      margin-bottom: 16px;
+    }
+
+    .header-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .header-title {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .header-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Stepper ── */
+    .stepper {
+      margin-bottom: 32px;
+    }
+
+    .stepper-bars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .stepper-bar {
+      flex: 1;
+      height: 3px;
+      border-radius: 100px;
+      background: var(--border);
+      transition: background var(--transition);
+    }
+
+    .stepper-bar.active {
+      background: var(--accent);
+    }
+
+    .stepper-bar.done {
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    .stepper-labels {
+      display: flex;
+      gap: 4px;
+    }
+
+    .stepper-label {
+      flex: 1;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 500;
+      transition: color var(--transition);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stepper-label.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Form fields ── */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .field-optional {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .field-input,
+    .field-textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      caret-color: var(--accent);
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder {
+      color: var(--muted);
+    }
+
+    .field-input:focus,
+    .field-textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    .field-input.error,
+    .field-textarea.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
+    }
+
+    .field-textarea {
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .field-error {
+      font-size: 12px;
+      color: var(--danger);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* ── Two-column grid ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-header-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ── Project cards ── */
+    .project-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .project-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .project-card-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .project-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--danger);
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    .btn-add {
+      background: transparent;
+      color: var(--accent);
+      border: 1px dashed rgba(99, 102, 241, 0.4);
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .btn-add:hover {
+      background: rgba(99, 102, 241, 0.08);
+      border-color: var(--accent);
+    }
+
+    .btn-add:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    /* ── Navigation ── */
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      gap: 10px;
+    }
+
+    .nav-buttons-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    /* ── Theme cards ── */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 580px) {
+      .theme-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .theme-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .theme-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 8px 24px rgba(99, 102, 241, 0.2);
+    }
+
+    .theme-preview {
+      padding: 20px 16px 16px;
+    }
+
+    .theme-preview-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .theme-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .theme-name-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .theme-preview-name {
+      font-size: 11px;
+      font-weight: 600;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .theme-preview-role {
+      font-size: 9px;
+      display: block;
+      margin-top: 1px;
+    }
+
+    .theme-pills {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .theme-pill {
+      font-size: 8px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+
+    .theme-info {
+      background: var(--surface);
+      padding: 12px 14px;
+    }
+
+    .theme-label-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .theme-label-vibe {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .theme-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      margin-top: 6px;
+    }
+
+    /* ── Generated prompt ── */
+    .status-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+      background: var(--info-bg);
+      border: 1px solid rgba(147, 197, 253, 0.2);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .status-banner.success {
+      background: var(--success-bg);
+      border-color: rgba(110, 231, 183, 0.25);
+    }
+
+    .status-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--info-text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-banner.success .status-text {
+      color: var(--success-text);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid rgba(147, 197, 253, 0.3);
+      color: var(--info-text);
+      border-radius: var(--radius-sm);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: rgba(147, 197, 253, 0.1);
+    }
+
+    .status-banner.success .copy-btn {
+      color: var(--success-text);
+      border-color: rgba(110, 231, 183, 0.3);
+    }
+
+    .prompt-instruction {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .prompt-container {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      max-height: 360px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+
+    .prompt-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .prompt-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .prompt-container::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .prompt-text {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .bottom-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .bottom-buttons .btn {
+      flex: 1;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    /* ── Steps ── */
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-dot {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background: var(--muted);
+      border-radius: 50%;
+      vertical-align: middle;
+      margin: 0 6px;
+    }
+
+    /* ── Scrollbar global ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 480px) {
+      .app {
+        padding: 24px 16px 48px;
+      }
+
+      .card {
+        padding: 20px 16px;
+      }
+
+      .header-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app" id="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div>
+        <div class="header-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+          Workshop Prompt Generator
+        </div>
+      </div>
+      <h1 class="header-title">Portfolio Builder</h1>
+      <p class="header-subtitle">Fill in your details, pick a theme, and get your prompt.</p>
+    </header>
+
+    <!-- Stepper -->
+    <div class="stepper" aria-label="Steps">
+      <div class="stepper-bars" id="stepperBars">
+        <div class="stepper-bar active" id="bar-0"></div>
+        <div class="stepper-bar" id="bar-1"></div>
+        <div class="stepper-bar" id="bar-2"></div>
+        <div class="stepper-bar" id="bar-3"></div>
+      </div>
+      <div class="stepper-labels">
+        <span class="stepper-label active" id="label-0">Personal</span>
+        <span class="stepper-label" id="label-1">Skills &amp; Projects</span>
+        <span class="stepper-label" id="label-2">Theme</span>
+        <span class="stepper-label" id="label-3">Generate</span>
+      </div>
+    </div>
+
+    <!-- ══════════════ STEP 1: Personal Details ══════════════ -->
+    <div class="step active" id="step-0">
+      <div class="card">
+        <h2 class="card-title">Personal Details</h2>
+        <p class="card-subtitle">Tell us about yourself. Required fields are marked without "(optional)".</p>
+
+        <div class="field">
+          <label class="field-label" for="inp-name">Full Name</label>
+          <input class="field-input" id="inp-name" type="text" placeholder="" autocomplete="name" />
+          <div class="field-error" id="err-name">Please enter your full name.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inp-email">Email</label>
+          <input class="field-input" id="inp-email" type="email" placeholder="john@college.edu" autocomplete="email" />
+          <div class="field-error" id="err-email">Please enter a valid email address.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inp-college">
+            College / Institution
+          </label>
+          <input class="field-input" id="inp-college" type="text" value="Mahendra Institute of Technology" disabled />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inp-role">
+            Role / Title
+          </label>
+          <input class="field-input" id="inp-role" type="text" value="Computer Science Engineer" disabled />
+          <div class="field-hint">Defaults to "Student Developer" if left empty.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inp-bio">
+            Short Bio
+            <span class="field-optional">(optional)</span>
+          </label>
+          <textarea class="field-textarea" id="inp-bio" rows="3"
+            placeholder="A passionate developer interested in AI and web development..."></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label class="field-label" for="inp-linkedin">
+              LinkedIn
+              <span class="field-optional">(optional)</span>
+            </label>
+            <input class="field-input" id="inp-linkedin" type="text" placeholder="linkedin.com/in/johndoe" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="inp-github">
+              GitHub
+              <span class="field-optional">(optional)</span>
+            </label>
+            <input class="field-input" id="inp-github" type="text" placeholder="github.com/johndoe" />
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <div class="nav-buttons-right">
+          <button class="btn btn-primary" id="next-0" onclick="next()">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ STEP 2: Skills & Projects ══════════════ -->
+    <div class="step" id="step-1">
+      <div class="card">
+        <h2 class="card-title">Skills &amp; Tech Stack</h2>
+        <p class="card-subtitle">List your technical skills and projects.</p>
+
+        <div class="field">
+          <label class="field-label" for="inp-skills">Skills / Tech Stack</label>
+          <textarea class="field-textarea" id="inp-skills" rows="2"
+            placeholder="Python, Langchain, CPP, Angular, Node.js, Firebase, Git, TailwindCSS..."></textarea>
+          <div class="field-hint">Comma-separated list of technologies you know.</div>
+          <div class="field-error" id="err-skills">Please list at least one skill.</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+          <span class="section-header-title">Projects <span class="field-optional">(optional)</span></span>
+          <button class="btn btn-secondary btn-sm" id="add-project-btn" onclick="addProject()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add project
+          </button>
+        </div>
+
+        <div id="projects-container"></div>
+        <div class="field-error" id="err-projects">The first project must have a title.</div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label class="field-label" for="inp-internships">
+            Internships / Experience
+            <span class="field-optional">(optional)</span>
+          </label>
+          <textarea class="field-textarea" id="inp-internships" rows="3"
+            placeholder="e.g. Software Intern at TechCorp (Jun–Aug 2025) — Built REST APIs..."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inp-achievements">
+            Achievements
+            <span class="field-optional">(optional)</span>
+          </label>
+          <textarea class="field-textarea" id="inp-achievements" rows="2"
+            placeholder="e.g. Won 1st place at XYZ Hackathon, Published paper on ML..."></textarea>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prev()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+        <button class="btn btn-primary" onclick="next()">
+          Continue
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════ STEP 3: Theme Selection ══════════════ -->
+    <div class="step" id="step-2">
+      <div class="card">
+        <h2 class="card-title">Choose Your Theme</h2>
+        <p class="card-subtitle">Pick a theme for your portfolio. This sets the entire color system that will be used by
+          the AI to build your site.</p>
+
+        <div class="theme-grid" id="theme-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prev()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+        <button class="btn btn-primary" onclick="next()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+          Generate prompt
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════ STEP 4: Generated Prompt ══════════════ -->
+    <div class="step" id="step-3">
+      <div class="card">
+        <h2 class="card-title">Your Prompt is Ready</h2>
+
+        <div class="status-banner" id="status-banner">
+          <span class="status-text" id="status-text">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4m0 4h.01" />
+            </svg>
+            Generating your prompt…
+          </span>
+          <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">Copy again</button>
+        </div>
+
+        <p class="prompt-instruction">
+          Paste this prompt into <strong>Antigravity IDE</strong> to generate your portfolio. The prompt was auto-copied
+          when you arrived on this step.
+        </p>
+
+        <div class="prompt-container" id="prompt-container">
+          <pre class="prompt-text" id="prompt-display"></pre>
+        </div>
+
+        <div class="bottom-buttons">
+          <button class="btn btn-secondary" onclick="startOver()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+            Start over
+          </button>
+          <button class="btn btn-primary" onclick="goToTheme()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M3 12h1m8-9v1m8 8h1m-9 8v1M5.6 5.6l.7.7m12.1-.7-.7.7m-12 11.4.7-.7m12 .7-.7-.7" />
+            </svg>
+            Change theme
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>AI Workshop 2026</span>
+      <span class="footer-dot"></span>
+      <span>April 9–10</span>
+      <span class="footer-dot"></span>
+      <span>Built with Antigravity</span>
+    </footer>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // THEMES
+    // ═══════════════════════════════════════════════════════════
+    const THEMES = {
+      midnight: {
+        id: 'midnight',
+        name: 'Midnight',
+        vibe: 'Premium dark, SaaS-grade',
+        bg: '#0F172A',
+        surface: '#1E293B',
+        border: '#334155',
+        accent: '#6366F1',
+        accentHover: '#818CF8',
+        textPrimary: '#F8FAFC',
+        textSecondary: '#94A3B8',
+        muted: '#475569',
+        isDark: true,
+        bannerBg: '#78350F',
+        bannerText: '#FEF3C7',
+      },
+      arctic: {
+        id: 'arctic',
+        name: 'Arctic',
+        vibe: 'Clean light, corporate',
+        bg: '#F8FAFC',
+        surface: '#FFFFFF',
+        border: '#E2E8F0',
+        accent: '#0EA5E9',
+        accentHover: '#38BDF8',
+        textPrimary: '#0F172A',
+        textSecondary: '#475569',
+        muted: '#94A3B8',
+        isDark: false,
+        bannerBg: '#FEF3C7',
+        bannerText: '#92400E',
+      },
+      obsidian: {
+        id: 'obsidian',
+        name: 'Obsidian',
+        vibe: 'Bold & dark',
+        bg: '#18181B',
+        surface: '#27272A',
+        border: '#3F3F46',
+        accent: '#F59E0B',
+        accentHover: '#FBBF24',
+        textPrimary: '#FAFAFA',
+        textSecondary: '#A1A1AA',
+        muted: '#52525B',
+        isDark: true,
+        bannerBg: '#78350F',
+        bannerText: '#FEF3C7',
+      },
+    };
+
+    // ═══════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════
+    let formState = {
+      name: '', email: '', college: 'Mahendra Institute of Technology', role: 'Computer Science Engineer', bio: '',
+      linkedin: '', github: '', skills: '',
+      projects: [{ title: '', description: '', tech: '' }],
+      internships: '', achievements: '',
+      theme: 'midnight',
+    };
+
+    let uiState = { step: 0, errors: {}, copied: false };
+
+    // ═══════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', () => {
+      renderThemeGrid();
+      renderProjects();
+      bindInputs();
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // INPUT BINDING
+    // ═══════════════════════════════════════════════════════════
+    function bindInputs() {
+      const map = [
+        ['inp-name', 'name'], ['inp-email', 'email'], ['inp-college', 'college'],
+        ['inp-role', 'role'], ['inp-bio', 'bio'], ['inp-linkedin', 'linkedin'],
+        ['inp-github', 'github'], ['inp-skills', 'skills'],
+        ['inp-internships', 'internships'], ['inp-achievements', 'achievements'],
+      ];
+      map.forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', () => { formState[key] = el.value; });
+      });
+    }
+
+    function syncInputs() {
+      const map = [
+        ['inp-name', 'name'], ['inp-email', 'email'], ['inp-college', 'college'],
+        ['inp-role', 'role'], ['inp-bio', 'bio'], ['inp-linkedin', 'linkedin'],
+        ['inp-github', 'github'], ['inp-skills', 'skills'],
+        ['inp-internships', 'internships'], ['inp-achievements', 'achievements'],
+      ];
+      map.forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) formState[key] = el.value;
+      });
+
+      formState.projects.forEach((proj, index) => {
+        const titleEl = document.getElementById('proj-title-' + index);
+        const descEl = document.getElementById('proj-desc-' + index);
+        const techEl = document.getElementById('proj-tech-' + index);
+        if (titleEl) proj.title = titleEl.value;
+        if (descEl) proj.description = descEl.value;
+        if (techEl) proj.tech = techEl.value;
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // STEPPER
+    // ═══════════════════════════════════════════════════════════
+    function updateStepper() {
+      const s = uiState.step;
+      for (let i = 0; i < 4; i++) {
+        const bar = document.getElementById('bar-' + i);
+        const label = document.getElementById('label-' + i);
+        bar.className = 'stepper-bar' + (i < s ? ' done' : i === s ? ' active' : '');
+        label.className = 'stepper-label' + (i === s ? ' active' : '');
+      }
+    }
+
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach((el, i) => {
+        el.classList.toggle('active', i === n);
+      });
+      uiState.step = n;
+      updateStepper();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // NAVIGATION
+    // ═══════════════════════════════════════════════════════════
+    function next() {
+      syncInputs();
+      if (!validateStep()) return;
+      const nextStep = uiState.step + 1;
+      showStep(nextStep);
+      if (nextStep === 3) {
+        onGenerateStep();
+      }
+    }
+
+    function prev() {
+      showStep(uiState.step - 1);
+    }
+
+    function goToTheme() {
+      showStep(2);
+    }
+
+    function startOver() {
+      formState = {
+        name: '', email: '', college: 'Mahendra Institute of Technology', role: 'Computer Science Engineer', bio: '',
+        linkedin: '', github: '', skills: '',
+        projects: [{ title: '', description: '', tech: '' }],
+        internships: '', achievements: '',
+        theme: 'midnight',
+      };
+      uiState = { step: 0, errors: {}, copied: false };
+
+      // Reset inputs
+      const ids = ['inp-name', 'inp-email', 'inp-bio',
+        'inp-linkedin', 'inp-github', 'inp-skills', 'inp-internships', 'inp-achievements'];
+      ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+
+      clearErrors();
+      renderProjects();
+      renderThemeGrid();
+      showStep(0);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // VALIDATION
+    // ═══════════════════════════════════════════════════════════
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validateStep() {
+      clearErrors();
+      let valid = true;
+      const s = uiState.step;
+
+      if (s === 0) {
+        if (!formState.name.trim()) { showError('name', 'Please enter your full name.'); valid = false; }
+        if (!formState.email.trim() || !EMAIL_RE.test(formState.email.trim())) {
+          showError('email', 'Please enter a valid email address.'); valid = false;
+        }
+      }
+
+      if (s === 1) {
+        if (!formState.skills.trim()) { showError('skills', 'Please list at least one skill.'); valid = false; }
+
+        const firstProj = formState.projects[0];
+        if (firstProj) {
+          const hasContent = firstProj.title.trim() || firstProj.description.trim() || firstProj.tech.trim();
+          if (hasContent && !firstProj.title.trim()) {
+            showError('projects', 'Please provide a title for your project.'); valid = false;
+          }
+        }
+      }
+
+      return valid;
+    }
+
+    function showError(field, msg) {
+      uiState.errors[field] = msg;
+      const errEl = document.getElementById('err-' + field);
+      const inpEl = document.getElementById('inp-' + field);
+      if (errEl) { errEl.textContent = msg; errEl.classList.add('visible'); }
+      if (inpEl) inpEl.classList.add('error');
+    }
+
+    function clearErrors() {
+      uiState.errors = {};
+      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('visible'));
+      document.querySelectorAll('.field-input.error, .field-textarea.error').forEach(el => el.classList.remove('error'));
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // PROJECTS
+    // ═══════════════════════════════════════════════════════════
+    function renderProjects() {
+      const container = document.getElementById('projects-container');
+      container.innerHTML = '';
+      formState.projects.forEach((proj, i) => {
+        container.appendChild(createProjectCard(proj, i));
+      });
+
+      const addBtn = document.getElementById('add-project-btn');
+      if (addBtn) addBtn.disabled = formState.projects.length >= 5;
+    }
+
+    function createProjectCard(proj, index) {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.id = 'proj-card-' + index;
+
+      const canRemove = true;
+
+      card.innerHTML = `
+    <div class="project-card-header">
+      <span class="project-card-label">Project ${index + 1}</span>
+      ${canRemove ? `<button class="btn btn-ghost" onclick="removeProject(${index})">Remove</button>` : ''}
+    </div>
+    <div class="project-fields">
+      <input class="field-input" id="proj-title-${index}" type="text"
+        placeholder="Project title" value="${escHtml(proj.title)}" />
+      <textarea class="field-textarea" id="proj-desc-${index}" rows="2"
+        placeholder="Brief description (what it does, problem it solves)">${escHtml(proj.description)}</textarea>
+      <input class="field-input" id="proj-tech-${index}" type="text"
+        placeholder="Tech used (e.g. React, Firebase, Python)" value="${escHtml(proj.tech)}" />
+    </div>
+  `;
+
+      // Bind inputs
+      setTimeout(() => {
+        const titleEl = document.getElementById('proj-title-' + index);
+        const descEl = document.getElementById('proj-desc-' + index);
+        const techEl = document.getElementById('proj-tech-' + index);
+        if (titleEl) titleEl.addEventListener('input', () => updateProject(index, 'title', titleEl.value));
+        if (descEl) descEl.addEventListener('input', () => updateProject(index, 'description', descEl.value));
+        if (techEl) techEl.addEventListener('input', () => updateProject(index, 'tech', techEl.value));
+      }, 0);
+
+      return card;
+    }
+
+    function addProject() {
+      if (formState.projects.length >= 5) return;
+      formState.projects.push({ title: '', description: '', tech: '' });
+      renderProjects();
+    }
+
+    function removeProject(index) {
+      formState.projects.splice(index, 1);
+      renderProjects();
+    }
+
+    function updateProject(index, field, value) {
+      if (formState.projects[index]) {
+        formState.projects[index][field] = value;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // THEME GRID
+    // ═══════════════════════════════════════════════════════════
+    function renderThemeGrid() {
+      const grid = document.getElementById('theme-grid');
+      grid.innerHTML = '';
+      Object.values(THEMES).forEach(theme => {
+        grid.appendChild(createThemeCard(theme));
+      });
+    }
+
+    function createThemeCard(theme) {
+      const card = document.createElement('div');
+      card.className = 'theme-card' + (formState.theme === theme.id ? ' selected' : '');
+      card.id = 'theme-card-' + theme.id;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', theme.name + ' theme');
+      card.onclick = () => selectTheme(theme.id);
+      card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') selectTheme(theme.id); };
+
+      const pillStyle = `background:${theme.surface}; color:${theme.accent}; border-color:${theme.accent}40;`;
+      const textOpacity50 = theme.isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+      const isSelected = formState.theme === theme.id;
+
+      card.innerHTML = `
+    <div class="theme-preview" style="background:${theme.bg}">
+      <div class="theme-preview-top">
+        <div class="theme-avatar" style="background:${theme.accent}; color:${theme.bg}">JD</div>
+        <div class="theme-name-area">
+          <span class="theme-preview-name" style="color:${theme.textPrimary}">Jane Doe</span>
+          <span class="theme-preview-role" style="color:${textOpacity50}">Developer</span>
+        </div>
+      </div>
+      <div class="theme-pills">
+        <span class="theme-pill" style="${pillStyle}">React</span>
+        <span class="theme-pill" style="${pillStyle}">Node</span>
+        <span class="theme-pill" style="${pillStyle}">AI</span>
+      </div>
+    </div>
+    <div class="theme-info">
+      <div class="theme-label-name">${theme.name}</div>
+      <div class="theme-label-vibe">${theme.vibe}</div>
+      ${isSelected ? '<div class="theme-badge">✓ Selected</div>' : ''}
+    </div>
+  `;
+      return card;
+    }
+
+    function selectTheme(id) {
+      formState.theme = id;
+      renderThemeGrid();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // GENERATE STEP
+    // ═══════════════════════════════════════════════════════════
+    function onGenerateStep() {
+      const prompt = buildPrompt();
+      document.getElementById('prompt-display').textContent = prompt;
+
+      // Auto-copy
+      copyPrompt(true);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // PROMPT BUILDER
+    // ═══════════════════════════════════════════════════════════
+    function buildPrompt() {
+      const f = formState;
+      const theme = THEMES[f.theme];
+
+      const or = (val, fallback) => (val && val.trim()) ? val.trim() : fallback;
+      const orNA = (val) => or(val, 'N/A');
+
+      // Projects
+      const validProjects = f.projects.filter(p => p.title && p.title.trim());
+      let projectsSection;
+      if (validProjects.length === 0) {
+        projectsSection = 'No projects provided.';
+      } else {
+        projectsSection = validProjects.map((p, i) =>
+          `  Project ${i + 1}:
+    Title: ${p.title.trim()}
+    Description: ${orNA(p.description)}
+    Tech Stack: ${orNA(p.tech)}`
+        ).join('\n');
+      }
+
+      const prompt = `You are an expert frontend developer and designer. Generate a complete, single-file HTML portfolio website based on the following details. The output must be ONLY the raw HTML code — no explanation, no markdown fences, no preamble.
+
+=== PERSONAL DETAILS ===
+Full Name: ${f.name.trim()}
+Email: ${f.email.trim()}
+College/Institution: ${or(f.college, 'Mahendra Institute of Technology')}
+Role/Title: ${or(f.role, 'Computer Science Engineer')}
+Short Bio: ${orNA(f.bio)}
+LinkedIn: ${orNA(f.linkedin)}
+GitHub: ${orNA(f.github)}
+
+=== SKILLS ===
+${f.skills.trim()}
+
+=== PROJECTS ===
+${projectsSection}
+
+=== INTERNSHIPS / EXPERIENCE ===
+${orNA(f.internships)}
+
+=== ACHIEVEMENTS ===
+${orNA(f.achievements)}
+
+=== DESIGN REQUIREMENTS ===
+
+Theme: "${theme.name}"
+CSS Variables (use these exactly):
+  --bg: ${theme.bg};
+  --surface: ${theme.surface};
+  --border: ${theme.border};
+  --accent: ${theme.accent};
+  --accent-hover: ${theme.accentHover};
+  --text-primary: ${theme.textPrimary};
+  --text-secondary: ${theme.textSecondary};
+  --muted: ${theme.muted};
+
+Hero Section Style: Centered layout with a subtle animated gradient background. The gradient should use the accent color at low opacity combined with the background color, creating a gentle pulsing or shifting effect via CSS @keyframes. The hero must include:
+- Full viewport height
+- Name displayed prominently (clamp(2rem, 5vw, 3.5rem))
+- Role/title below the name
+- A short tagline or bio excerpt
+- Two CTA buttons: "View Projects" (scrolls to projects) and "Contact Me" (scrolls to contact)
+- Smooth scroll behavior on the entire page
+
+Sections to include (in order):
+1. Hero (as described above)
+2. About Me — Use the bio. If empty, show placeholder banner.
+3. Skills — Display as pill/tag badges with accent styling.
+4. Projects — Card grid (responsive). Each card: project title, description, tech tags, a "View Project" button (href="#").
+5. Experience / Internships — Timeline or card layout. If empty, show placeholder banner.
+6. Achievements — List or card layout. If empty, show placeholder banner.
+7. Contact — Show email, LinkedIn, GitHub with icons (use inline SVG icons). Include a simple contact form (name, email, message) with no backend — just styled.
+8. Footer — Name, copyright year, "Built with AI" badge.
+
+=== PLACEHOLDER BANNER RULE ===
+If a section has no content provided (marked as empty or N/A above), keep the section in the HTML but overlay it with a solid colored warning-style banner strip. The banner should be:
+- Full width across the section
+- Background color: ${theme.bannerBg}
+- Text color: ${theme.bannerText}
+- Text: "⚠ Placeholder — Add your [section name] to complete this section"
+- Height: ~40px, centered text, font-size 14px, font-weight 600
+- Positioned at the top of the section, with the section content still visible but slightly faded (opacity 0.4) behind/below it
+
+=== CODE REQUIREMENTS ===
+- Single HTML file, all CSS, tailwind and JS inline
+- Fully responsive (mobile-first, looks great on 320px to 1440px)
+- Smooth scroll, scroll-reveal animations (use IntersectionObserver)
+- Navigation bar: sticky, transparent on top, solid on scroll, with links to each section and a hamburger menu on mobile
+- Use Google Fonts: Import "Inter" for body and "Space Grotesk" for headings
+- Semantic HTML5 (header, main, section, footer)
+- Clean, production-grade code
+- No external JS libraries — vanilla JS only
+- All icons as inline SVG
+- Minimum 600 lines of well-structured code for a polished result
+
+Output ONLY the complete HTML code. Nothing else.`;
+
+      return prompt;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // CLIPBOARD
+    // ═══════════════════════════════════════════════════════════
+    let copyResetTimer = null;
+
+    function copyPrompt(auto = false) {
+      const prompt = document.getElementById('prompt-display').textContent;
+      if (!prompt) return;
+
+      const doSuccess = () => {
+        uiState.copied = true;
+        const banner = document.getElementById('status-banner');
+        const statusText = document.getElementById('status-text');
+        const copyBtn = document.getElementById('copy-btn');
+        banner.classList.add('success');
+        statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Copied to clipboard!`;
+        copyBtn.textContent = 'Copied';
+
+        clearTimeout(copyResetTimer);
+        copyResetTimer = setTimeout(() => {
+          uiState.copied = false;
+          banner.classList.remove('success');
+          statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg> Your prompt is ready`;
+          copyBtn.textContent = 'Copy again';
+        }, 2500);
+      };
+
+      const doFallback = () => {
+        // Fallback: select text manually
+        const pre = document.getElementById('prompt-display');
+        const range = document.createRange();
+        range.selectNodeContents(pre);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        doSuccess();
+      };
+
+      if (!auto) {
+        // Set status to loading
+        const statusText = document.getElementById('status-text');
+        statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg> Copying…`;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(prompt).then(doSuccess).catch(doFallback);
+      } else {
+        doFallback();
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // UTILS
+    // ═══════════════════════════════════════════════════════════
+    function escHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+
+</html>
